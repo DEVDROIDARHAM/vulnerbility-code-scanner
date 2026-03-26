@@ -1,0 +1,36 @@
+Python
+pycache/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+Environment
+.env
+IDE
+.vscode/
+.idea/
+*.swp
+Logs
+*.log
+OS
+.DS_Store
+Thumbs.db
+database.db
+
+# Database — NEVER COMMIT
+*.db
+*.sqlite
+
+# Environment variables — NEVER COMMIT
+.env.local
+.env.production
+
+# Database — NEVER COMMIT
+database.db
