@@ -56,14 +56,18 @@ with app.app_context():
     print("Database initialized - tables ready")
 
 # Configure CORS (allow React frontend)
+_allowed_origins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:3000",
+]
+_frontend_url = os.environ.get("FRONTEND_URL")
+if _frontend_url:
+    _allowed_origins.append(_frontend_url)
+
 CORS(app, resources={
     r"/api/*": {
-        "origins": [
-            "http://localhost:5173",
-            "http://localhost:5174",
-            "http://localhost:3000",
-            # Add production URL here later when deploying
-        ],
+        "origins": _allowed_origins,
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"]
     }
