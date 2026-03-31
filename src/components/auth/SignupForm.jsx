@@ -15,7 +15,7 @@ import { useAuth } from "../../context/AuthContext";
 import Button from "../common/Button";
 
 const SignupForm = () => {
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -55,14 +55,10 @@ const SignupForm = () => {
 
     setLoading(true);
     try {
-      const success = await signup(name, email, password);
-      if (success) {
-        navigate("/dashboard");
-      } else {
-        setError("Account registration failed. Please try again.");
-      }
+      await signup(username, email, password);
+      navigate("/dashboard");
     } catch (err) {
-      setError("An unexpected error occurred. Please try again.");
+      setError(err.message || "Account registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -101,8 +97,8 @@ const SignupForm = () => {
               required
               className="block w-full pl-10 pr-4 py-3 bg-background border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all outline-none"
               placeholder="John Doe"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
         </div>

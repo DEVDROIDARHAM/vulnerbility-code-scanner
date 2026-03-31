@@ -1,8 +1,9 @@
 import { createContext, useContext, useState, useCallback } from "react";
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 const AuthContext = createContext(null);
 
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const clearGuestTracking = () => {
   localStorage.removeItem("guestScanCount");
   localStorage.removeItem("guestScans");
@@ -22,46 +23,56 @@ export function AuthProvider({ children }) {
   const login = useCallback(async (email, password) => {
     setLoading(true);
     try {
-      await delay(1200);
-      const mockUser = {
-        id: "user_123",
-        email,
-        name: email.split("@")[0],
-        plan: "free",
-        scansRemaining: 50,
-        joinedAt: new Date().toISOString(),
-      };
+      const response = await fetch(`${BASE_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Login failed");
+      }
+
       clearGuestTracking();
-      localStorage.setItem("user", JSON.stringify(mockUser));
-      setUser(mockUser);
-      return { success: true, user: mockUser };
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      setUser(data.user);
+      return { success: true, user: data.user };
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const signup = useCallback(async (name, email, password) => {
+  // username replaces name to match backend schema
+  const signup = useCallback(async (username, email, password) => {
     setLoading(true);
     try {
-      await delay(1200);
-      const mockUser = {
-        id: "user_" + Date.now(),
-        email,
-        name,
-        plan: "free",
-        scansRemaining: 50,
-        joinedAt: new Date().toISOString(),
-      };
+      const response = await fetch(`${BASE_URL}/api/auth/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Signup failed");
+      }
+
       clearGuestTracking();
-      localStorage.setItem("user", JSON.stringify(mockUser));
-      setUser(mockUser);
-      return { success: true, user: mockUser };
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      setUser(data.user);
+      return { success: true, user: data.user };
     } finally {
       setLoading(false);
     }
   }, []);
 
   const logout = useCallback(() => {
+    localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
   }, []);
