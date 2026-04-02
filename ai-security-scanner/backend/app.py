@@ -60,6 +60,7 @@ _allowed_origins = [
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:3000",
+    "https://scansentinel.vercel.app",
 ]
 _frontend_url = os.environ.get("FRONTEND_URL")
 if _frontend_url:
